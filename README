@@ -1,0 +1,34 @@
+Tie::DxHash
+===========
+
+
+
+Description
+-----------
+Tie::DxHash implements a hash which preserves insertion order and allows
+duplicate keys.  It was written to facilitate the use of more complex
+mod_rewrite rules in Apache configuration files written with Perl Sections.
+See the module's POD for details.
+
+
+
+Prerequisites
+-------------
+None, apart from a fairly recent version of Perl.  I would have thought that
+v5.003 or later should be sufficient.
+
+
+
+Installation
+------------
+The usual:
+perl Makefile.PL
+make
+make test
+make install
+
+
+
+Copyright (c) 2001 Kevin Ruscoe.  All rights reserved.
+This program is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself.
