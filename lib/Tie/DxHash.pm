@@ -7,7 +7,7 @@ use Tie::Hash;
 
 
 
-$VERSION = '0.92';
+$VERSION = '0.93';
 @ISA     = qw(Tie::StdHash);
 
 
