@@ -1,5 +1,9 @@
 Revision history for Perl extension Tie::DxHash.
 
+0.92
+	- fixed a bug related to passing additional
+	arguments to the tie function;
+	thanks to Daniel Kubb for the spot
 0.91
 	- added a version number to the tarball
 	- shortened the module's short description in order

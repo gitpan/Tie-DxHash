@@ -7,7 +7,7 @@ use Tie::Hash;
 
 
 
-$VERSION = '0.91';
+$VERSION = '0.92';
 @ISA     = qw(Tie::StdHash);
 
 
@@ -73,7 +73,7 @@ sub FETCH {
 		return $self->{data}[$offset]{value};
 	}
 
-	undef;
+	return;
 }
 
 
@@ -112,14 +112,14 @@ sub STORE {
 
 
 sub TIEHASH {
-	my($class, %args) = @_;
+	my($class, @args) = @_;
 
 	my($self);
 
 	$self = {};
 	bless $self, $class;
 
-	$self->init(%args);
+	$self->init(@args);
 	$self;
 }
 
@@ -135,12 +135,12 @@ sub ckey {
 
 
 sub init {
-	my($self, %args) = @_;
+	my($self, @args) = @_;
 
 	my($key, $value);
 
 	$self->CLEAR;
-	$self->STORE($key, $value) while ($key, $value) = each %args;
+	$self->STORE($key, $value) while ($key, $value) = splice(@args, 0, 2);
 	$self;
 }
 
