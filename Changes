@@ -1,5 +1,10 @@
 Revision history for Perl extension Tie::DxHash.
 
+0.91
+	- added a version number to the tarball
+	- shortened the module's short description in order
+	that it is not truncated on CPAN
+
 0.90  Thu Mar  8 18:13:47 2001
 	- original version; created by h2xs 1.19
 

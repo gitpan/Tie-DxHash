@@ -7,7 +7,7 @@ use Tie::Hash;
 
 
 
-$VERSION = '0.90';
+$VERSION = '0.91';
 @ISA     = qw(Tie::StdHash);
 
 
@@ -151,8 +151,7 @@ __END__
 
 =head1 NAME
 
-Tie::DxHash -   implements a hash  which preserves  insertion order   and allows
-duplicate keys.
+Tie::DxHash - keeps insertion order; allows duplicate keys
 
 =head1 SYNOPSIS
 
@@ -186,13 +185,13 @@ to use it  exclusively, even when a  simpler directive  would  do the  trick, in
 order to group my redirections together and keep them consistent.  So, I came up
 against the following problem quite early on.
 
-The synopsis    shows some  syntax  which  might  easily be    needed when using
-mod_rewrite within a Perl Section.  Clearly, using an  ordinary hash will not do
-what you  want.  The two  additional features we  need are to preserve insertion
-order and to allow duplicate keys.  When retrieving an  element from the hash by
-name, successive  requests for the same name  must iterate through the duplicate
-entries  (and, presumably, wrap around  when the end   of the chain is reached).
-This  is where Tie::DxHash  comes in.  Simply  by tying  the offending hash, the
+The synopsis  shows  some syntax which  might  be needed when using  mod_rewrite
+within a  Perl Section.  Clearly,  using an ordinary hash will   not do what you
+want.  The two additional features we  need are to  preserve insertion order and
+to allow  duplicate keys.   When retrieving an  element from  the hash by  name,
+successive requests for the same name must iterate through the duplicate entries
+(and,  presumably, wrap around when  the end of  the chain is reached).  This is
+where Tie::DxHash  comes   in.   Simply  by  tying   the  offending   hash,  the
 corresponding configuration directives work as expected.
 
 Running an Apache syntax  check (with docroot check)  on your configuration file
