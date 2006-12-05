@@ -1,5 +1,10 @@
 Revision history for Tie-DxHash
 
+1.01
+- Changed version numbering style back to a Numeric Version
+(see the documentation for the version pragma).  PAUSE does not appear
+to like Extended Versions.
+
 1.0.0
 - fixed bug: tied hashes did not work correctly when used with keys/values;
 tested with keys.t and scalar.t

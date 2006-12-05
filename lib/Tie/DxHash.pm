@@ -1,14 +1,15 @@
 # $Id $
-# $Revision 1.0.0 $
+# $Revision 1.01 $
 
 package Tie::DxHash;
 
 use warnings;
 use strict;
-use version; our $VERSION = qv('1.0.0');
 use base qw(Tie::Hash);
 
 use Tie::Hash;
+
+our $VERSION = '1.01';
 
 sub CLEAR {
     my ($self) = @_;
