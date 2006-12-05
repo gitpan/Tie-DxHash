@@ -1,177 +1,187 @@
+# $Id $
+# $Revision 1.0.0 $
+
 package Tie::DxHash;
 
+use warnings;
 use strict;
-use vars qw($VERSION @ISA);
+use version; our $VERSION = qv('1.0.0');
+use base qw(Tie::Hash);
 
 use Tie::Hash;
 
-
-
-$VERSION = '0.93';
-@ISA     = qw(Tie::StdHash);
-
-
-
 sub CLEAR {
-	my($self) = @_;
+    my ($self) = @_;
 
-	$self->{data}        = [];
-	$self->{iterators}   = {};
-	$self->{occurrences} = {};
-	$self->ckey(0);
+    my $test;
 
-	$self;
+    $self->{data}        = [];
+    $self->{iterators}   = {};
+    $self->{occurrences} = {};
+    $self->_ckey(0);
+
+    return $self;
 }
-
-
 
 sub DELETE {
-	my($self, $key) = @_;
+    my ( $self, $key ) = @_;
 
-	my($offset);
+    my ($offset);
 
-	$offset = 0;
+    $offset = 0;
 
-      ELEMENT:
-	while ($offset < @{$self->{data}}) {
-		if ($key eq $self->{data}[$offset]{key}) {
-			splice @{$self->{data}}, $offset, 1;
-		}
-		else {
-			$offset++;
-		}
-	}
+ELEMENT:
+    while ( $offset < @{ $self->{data} } ) {
+        if ( $key eq $self->{data}[$offset]{key} ) {
+            splice @{ $self->{data} }, $offset, 1;
+        }
+        else {
+            $offset++;
+        }
+    }
 
-	delete $self->{iterators}{$key};
-	delete $self->{occurrences}{$key};
-	$self;
+    delete $self->{iterators}{$key};
+    delete $self->{occurrences}{$key};
+    return $self;
 }
-
-
 
 sub EXISTS {
-	my($self, $key) = @_;
+    my ( $self, $key ) = @_;
 
-	exists $self->{occurrences}{$key};
+    return exists $self->{occurrences}{$key};
 }
-
-
 
 sub FETCH {
-	my($self, $key) = @_;
+    my ( $self, $key ) = @_;
 
-	my($dup, $offset);
+    my ($dup) = 1;
 
-	$dup = 1;
+HASH_KEY:
+    foreach my $offset ( 0 .. @{ $self->{data} } - 1 ) {
+        next HASH_KEY if $key ne $self->{data}[$offset]{key};
+        next HASH_KEY if $dup++ != $self->{iterators}{$key};
+        $self->{iterators}{$key}++;
 
-      HASH_KEY:
-	foreach $offset (0 .. @{$self->{data}} - 1) {
-		next HASH_KEY unless $key eq $self->{data}[$offset]{key};
-		next HASH_KEY unless $dup++ == $self->{iterators}{$key};
-		$self->{iterators}{$key}++;
-		$self->{iterators}{$key} = 1 if $self->{iterators}{$key} > $self->{occurrences}{$key};
-		return $self->{data}[$offset]{value};
-	}
+        if ( $self->{iterators}{$key} > $self->{occurrences}{$key} ) {
+            $self->{iterators}{$key} = 1;
+        }
 
-	return;
+        return $self->{data}[$offset]{value};
+    }
+
+    return;
 }
-
-
 
 sub FIRSTKEY {
-	my($self) = @_;
+    my ($self) = @_;
 
-	$self->ckey(0);
-	$self->NEXTKEY;
+    $self->_ckey(0);
+    return $self->NEXTKEY;
 }
-
-
 
 sub NEXTKEY {
-	my($self) = @_;
+    my ($self) = @_;
 
-	my($ckey, $key);
+    my ($ckey) = $self->_ckey;
 
-	$ckey = $self->ckey;
-	$self->ckey($ckey + 1);
-	$self->{data}[$ckey]{key};
+    if ( $ckey == @{ $self->{data} } ) {
+        return;
+    }
+    else {
+        $self->_ckey( $ckey + 1 );
+        return $self->{data}[$ckey]{key};
+    }
 }
 
+sub SCALAR {
+    my ($self) = @_;
 
+    my $hash_size = 0;
+
+HASH_KEY:
+    foreach my $key ( keys %{ $self->{occurrences} } ) {
+        $hash_size += $self->{occurrences}{$key};
+    }
+
+    return $hash_size;
+}
 
 sub STORE {
-	my($self, $key, $value) = @_;
+    my ( $self, $key, $value ) = @_;
 
-	push @{$self->{data}}, { key => $key, value => $value };
-	$self->{iterators}{$key} ||= 1;
-	$self->{occurrences}{$key}++;
+    push @{ $self->{data} }, { key => $key, value => $value };
+    $self->{iterators}{$key} ||= 1;
+    $self->{occurrences}{$key}++;
 
-	$self;
+    return $self;
 }
-
-
 
 sub TIEHASH {
-	my($class, @args) = @_;
+    my ( $class, @args ) = @_;
 
-	my($self);
+    my ($self);
 
-	$self = {};
-	bless $self, $class;
+    $self = {};
+    bless $self, $class;
 
-	$self->init(@args);
-	$self;
+    $self->_init(@args);
+    return $self;
 }
 
+sub _ckey {
+    my ( $self, $ckey ) = @_;
 
-
-sub ckey {
-	my($self, $ckey) = @_;
-
-	$self->{ckey} = $ckey if defined $ckey;
-	$self->{ckey};
+    if ( defined $ckey ) {
+        $self->{ckey} = $ckey;
+    }
+    return $self->{ckey};
 }
 
+sub _init {
+    my ( $self, @args ) = @_;
 
+    $self->CLEAR;
 
-sub init {
-	my($self, @args) = @_;
+    while ( my ( $key, $value ) = splice @args, 0, 2 ) {
+        $self->STORE( $key, $value );
+    }
 
-	my($key, $value);
-
-	$self->CLEAR;
-	$self->STORE($key, $value) while ($key, $value) = splice(@args, 0, 2);
-	$self;
+    return $self;
 }
 
-
-
-1;
+1;    # Magic true value required at end of module
 __END__
 
 =head1 NAME
 
 Tie::DxHash - keeps insertion order; allows duplicate keys
 
+
+=head1 VERSION
+
+This document describes Tie::DxHash version 0.94
+
+
 =head1 SYNOPSIS
 
- use Tie::DxHash;
- my(%vhost);
- tie %vhost, 'Tie::DxHash' [, LIST];
- %vhost = (
-   ServerName  => 'foo',
-   RewriteCond => 'bar',
-   RewriteRule => 'bletch',
-   RewriteCond => 'phooey',
-   RewriteRule => 'squelch',
- );
+    use Tie::DxHash;
+    my(%vhost);
+    tie %vhost, 'Tie::DxHash' [, LIST];
+    %vhost = (
+        ServerName  => 'foo',
+        RewriteCond => 'bar',
+        RewriteRule => 'bletch',
+        RewriteCond => 'phooey',
+        RewriteRule => 'squelch',
+    );
+
 
 =head1 DESCRIPTION
 
-This module    was written to   allow   the  use of   rewrite  rules  in  Apache
-configuration files written  with Perl Sections.  However,  a potential user has
-stated that he  needs it to support the  use of  multiple ScriptAlias directives
-within a  single Virtual Host (which is  required by FrontPage, apparently).  If
+This  module was  written to     allow the  use of    rewrite  rules in   Apache
+configuration  files written with Perl Sections.   However, a potential user has
+stated that he  needs it to support  the use of  multiple ScriptAlias directives
+within a single Virtual Host  (which is required by  FrontPage, apparently).  If
 you find a completely different use for it, great.
 
 The original purpose of this  module is not quite  so obscure as it might sound.
@@ -200,13 +210,69 @@ without complaint.   Incidentally,  I  strongly recommend building   your Apache
 configuration files with make (or equivalent) in  order to enforce the above two
 checks, preceded by a Perl syntax check (with C<perl -cx>).
 
+
+=head1 SUBROUTINES/METHODS
+
+This module   is  intended to be   called  through Perl's   tie  interface.  For
+reference, the following methods have been defined:
+
+    CLEAR
+    DELETE
+    EXISTS
+    FETCH
+    FIRSTKEY
+    NEXTKEY
+    SCALAR
+    STORE
+    TIEHASH
+
+=head1 DIAGNOSTICS
+
+None.
+
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+Tie::DxHash requires no configuration files or environment variables.
+
+
+=head1 DEPENDENCIES
+
+None.
+
+
+=head1 INCOMPATIBILITIES
+
+None reported.
+
+
 =head1 INTERNALS
 
-For those interested, Tie::IxHash works by storing the  hash data in an array of
+For those interested, Tie::DxHash works by storing the  hash data in an array of
 hash references  (containing  the key/value  pairs).  This  preserves  insertion
 order.  A separate set  of iterators (one per  distinct key) keeps track of  the
 last retrieved value for a given key, thus  allowing the successive retrieval of
 multiple values for the same key to work as expected.
+
+
+=head1 BUGS AND LIMITATIONS
+
+The algorithms used to retrieve and delete elements by  key run in O(N) time, so
+do not expect  this  module to work well   on large data  sets.   This is not  a
+problem for the module's intended  use.  If you find  another use for the module
+which involves larger quantities of data, let me know and I will put some effort
+into optimising for speed.
+
+The  mod_rewrite  directives for  which   this module  was   written  (primarily
+RewriteCond and RewriteRule) can  occur in all  four configuration file contexts
+(i.e. server config,  virtual host, directory, .htaccess).  However, Tie::DxHash
+only helps when  you are using  a directive which  is mapped  onto a  Perl hash.
+This limits you to  directives which are block  sections with begin and end tags
+(like  <VirtualHost>  and  <Directory>).   I  get  round  this  by   sticking my
+mod_rewrite directives in  a name-based virtual host container  (as shown in the
+synopsis) even in the degenerate case where the  web server only has one virtual
+host.
+
 
 =head1 SEE ALSO
 
@@ -227,26 +293,38 @@ the mod_perl    guide, by Stas Bekman.    Alternatively,  buy the  O'Reilly book
 Writing Apache Modules with Perl and C, by Lincoln  Stein & Doug MacEachern, and
 study Chapter 8: Customizing the Apache Configuration Process.
 
-=head1 BUGS
-
-The algorithms used to retrieve and delete elements by  key run in O(N) time, so
-do not expect  this  module to work well   on large data  sets.   This is not  a
-problem for the module's intended  use.  If you find  another use for the module
-which involves larger quantities of data, let me know and I will put some effort
-into optimising for speed.
-
-The  mod_rewrite  directives for  which   this module  was   written  (primarily
-RewriteCond and RewriteRule) can  occur in all  four configuration file contexts
-(i.e. server config,  virtual host, directory, .htaccess).  However, Tie::DxHash
-only helps when  you are using  a directive which  is mapped  onto a  Perl hash.
-This limits you to  directives which are block  sections with begin and end tags
-(like  <VirtualHost>  and  <Directory>).   I  get  round  this  by   sticking my
-mod_rewrite directives in  a name-based virtual host container  (as shown in the
-synopsis) even in the degenerate case where the  web server only has one virtual
-host.
 
 =head1 AUTHOR
 
-Kevin Ruscoe
+Kevin Ruscoe  C<< <kevin@sapphireoflondon.org> >>
 
-=cut
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (c) 2006, Kevin Ruscoe C<< <kevin@sapphireoflondon.org> >>. All rights
+reserved.
+
+This module is free software; you can redistribute it and/or modify it under the
+same terms as Perl itself. See L<perlartistic>.
+
+
+=head1 DISCLAIMER OF WARRANTY
+
+BECAUSE THIS SOFTWARE IS LICENSED FREE  OF CHARGE, THERE IS  NO WARRANTY FOR THE
+SOFTWARE,  TO THE EXTENT  PERMITTED  BY  APPLICABLE LAW.  EXCEPT WHEN  OTHERWISE
+STATED IN  WRITING  THE  COPYRIGHT  HOLDERS  AND/OR  OTHER  PARTIES  PROVIDE THE
+SOFTWARE "AS  IS" WITHOUT WARRANTY  OF ANY  KIND,  EITHER EXPRESSED OR  IMPLIED,
+INCLUDING, BUT NOT  LIMITED TO, THE   IMPLIED WARRANTIES OF MERCHANTABILITY  AND
+FITNESS  FOR  A  PARTICULAR PURPOSE.  THE  ENTIRE  RISK AS  TO THE  QUALITY  AND
+PERFORMANCE OF THE  SOFTWARE IS WITH  YOU. SHOULD THE SOFTWARE  PROVE DEFECTIVE,
+YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR, OR CORRECTION.
+
+IN NO EVENT UNLESS REQUIRED  BY APPLICABLE LAW OR AGREED  TO IN WRITING WILL ANY
+COPYRIGHT HOLDER,   OR ANY OTHER PARTY  WHO  MAY MODIFY  AND/OR REDISTRIBUTE THE
+SOFTWARE  AS  PERMITTED BY THE  ABOVE  LICENCE,  BE LIABLE   TO YOU FOR DAMAGES,
+INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT
+OF THE USE OR INABILITY TO  USE THE SOFTWARE  (INCLUDING BUT NOT LIMITED TO LOSS
+OF DATA OR DATA  BEING RENDERED INACCURATE OR LOSSES  SUSTAINED BY YOU  OR THIRD
+PARTIES OR A FAILURE OF THE SOFTWARE  TO OPERATE WITH  ANY OTHER SOFTWARE), EVEN
+IF SUCH HOLDER  OR  OTHER PARTY HAS   BEEN  ADVISED OF THE POSSIBILITY   OF SUCH
+DAMAGES.

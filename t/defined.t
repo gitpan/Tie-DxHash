@@ -9,13 +9,13 @@ BEGIN { plan tests => 4 }
 use Tie::DxHash;
 @ISA = qw(Tie::DxHash);
 
-my(%obj);
+my (%obj);
 
 tie %obj, 'Tie::DxHash::Child';
-%obj = (r => 'red', g => 'green', g => undef, b => 'blue');
+%obj = ( r => 'red', g => 'green', g => undef, b => 'blue' );
 delete $obj{b};
 
 ok(1);
-ok(defined $obj{g});
-ok(not defined $obj{g});
-ok(not defined $obj{b});
+ok( defined $obj{g} );
+ok( not defined $obj{g} );
+ok( not defined $obj{b} );

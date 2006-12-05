@@ -1,0 +1,47 @@
+This file contains message digests of all files listed in MANIFEST,
+signed via the Module::Signature module, version 0.55.
+
+To verify the content in this distribution, first make sure you have
+Module::Signature installed, then type:
+
+    % cpansign -v
+
+It will check each file's integrity, as well as the signature's
+validity.  If "==> Signature verified OK! <==" is not displayed,
+the distribution may already have been compromised, and you should
+not run its Makefile.PL or Build.PL.
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+SHA1 6ded6c17b7a6a4e42c9189f5f187b00023205288 Build.PL
+SHA1 8b2719cf15baf1d9f244dae704d2a60b25f0b9d9 Changes
+SHA1 df5d556d9836f359d9f7ad03223edae9d28c36ed MANIFEST
+SHA1 ef4a7cc138d143d36b7b228c5308b71b7bda8581 MANIFEST.SKIP
+SHA1 f502a1cb4b5d7033282fbd4f7ca2c440ce33ddf5 META.yml
+SHA1 7593f375ff651fb955882d996a06bdf542687415 Makefile.PL
+SHA1 1599c89abf40319f2137049979b859cc235967f2 README
+SHA1 7082161a966a8127132271e06a6504aca4bca5d7 lib/Tie/DxHash.pm
+SHA1 57c43409fbde3f668b618ed2992c330459bad6d3 t/00-distribution.t
+SHA1 f0f50d4d996fd20096fb834e56dfc00510928a8b t/01-kwalitee.t
+SHA1 251a4bc21578c2a17d776970aa04fc8958c4f57b t/02-perl-critic.t
+SHA1 fc6ff3f187e236e32cb4bc3c1b4f29420a2f5f56 t/03-pod.t
+SHA1 d6b0b8a3d1efedfff1b6ad442118c568601a3a43 t/04-pod-coverage.t
+SHA1 61c895d189effad1495b486211941c635a4637fc t/clear.t
+SHA1 d63ce55b4cef00d76d3c162c45b9e08d836877b2 t/defined.t
+SHA1 b21a4b6dd7efeff4134dbe95dc72ad02ef7f8cea t/delete.t
+SHA1 cae9d04f8eb2c070058a96deb710ed3b0a66e9ac t/destroy.t
+SHA1 67773b5cf1680095fd8818793e7382f3b8fa18e2 t/exists.t
+SHA1 045488514aeb3b0584b955b20f99e250a46796dd t/fetch.t
+SHA1 ec83d62719b2a0053de699793ae16c616ac513d5 t/keys.t
+SHA1 26d2f61b3fd96eca1e0e06a5c32497fe6d777829 t/multi.t
+SHA1 efe042c1f06772a874d139a2e2aed8eeb4728c85 t/scalar.t
+SHA1 ab85784a21916e77da2ca60833fd669e0bc3df09 t/store.t
+SHA1 dfcd98c6bbed6680c311a82eaafdf275cb633f60 t/tiehash.t
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
+
+iD8DBQFFdPdOpnCB7nVhtj4RAt8BAJ9ywqLHED/A15KEskmcrA4XIr8xRgCeOwVS
+n46MPk80y5qBHi0etspK3jo=
+=q7lD
+-----END PGP SIGNATURE-----
