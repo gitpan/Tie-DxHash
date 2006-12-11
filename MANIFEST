@@ -22,4 +22,3 @@ t/multi.t
 t/scalar.t
 t/store.t
 t/tiehash.t
-SIGNATURE    Added here by Module::Build
