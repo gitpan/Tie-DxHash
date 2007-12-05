@@ -1,6 +1,6 @@
 ---
 name: Tie-DxHash
-version: 1.02
+version: 1.03
 author:
   - 'Kevin Ruscoe <kevin@sapphireoflondon.org>'
 abstract: keeps insertion order; allows duplicate keys
@@ -13,8 +13,8 @@ requires:
 provides:
   Tie::DxHash:
     file: lib/Tie/DxHash.pm
-    version: 1.02
-generated_by: Module::Build version 0.2805
+    version: 1.03
+generated_by: Module::Build version 0.2808
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
   version: 1.2

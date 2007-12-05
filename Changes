@@ -1,5 +1,8 @@
 Revision history for Tie-DxHash
 
+1.03
+- only run Test::Perl::Critic if AUTHOR_TEST env var is set
+
 1.02
 - Removed the SIGNATURE file.  A number of people have reported failures during automatic installation
 caused by SIGNATURE files.  My own file caused an installation failure for one of the CPAN testers

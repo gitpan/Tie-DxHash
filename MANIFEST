@@ -2,9 +2,8 @@ Build.PL
 Changes
 lib/Tie/DxHash.pm
 Makefile.PL
-MANIFEST
+MANIFEST			This list of files
 MANIFEST.SKIP
-META.yml
 README
 t/00-distribution.t
 t/01-kwalitee.t
@@ -22,3 +21,4 @@ t/multi.t
 t/scalar.t
 t/store.t
 t/tiehash.t
+META.yml

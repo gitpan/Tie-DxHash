@@ -1,5 +1,5 @@
 # $Id $
-# $Revision 1.02 $
+# $Revision 1.03 $
 
 package Tie::DxHash;
 
@@ -9,7 +9,7 @@ use base qw(Tie::Hash);
 
 use Tie::Hash;
 
-our $VERSION = '1.02';
+our $VERSION = '1.03';
 
 sub CLEAR {
     my ($self) = @_;
@@ -160,7 +160,7 @@ Tie::DxHash - keeps insertion order; allows duplicate keys
 
 =head1 VERSION
 
-This document describes Tie::DxHash version 0.94
+This document describes Tie::DxHash version 1.03
 
 
 =head1 SYNOPSIS
