@@ -1,5 +1,10 @@
 Revision history for Tie-DxHash
 
+1.04
+- delete was not returning the expected value.  It now returns a reference to a list of the
+removed values.  If no values were removed, it returns a reference to the empty list.
+Thanks to Bart Lateur for the spot.
+
 1.03
 - only run Test::Perl::Critic if AUTHOR_TEST env var is set
 

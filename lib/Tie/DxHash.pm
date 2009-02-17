@@ -27,13 +27,13 @@ sub CLEAR {
 sub DELETE {
     my ( $self, $key ) = @_;
 
-    my ($offset);
-
-    $offset = 0;
+    my $offset           = 0;
+    my @deleted_elements = ();
 
 ELEMENT:
     while ( $offset < @{ $self->{data} } ) {
         if ( $key eq $self->{data}[$offset]{key} ) {
+            push @deleted_elements, $self->{data}[$offset]{value};
             splice @{ $self->{data} }, $offset, 1;
         }
         else {
@@ -43,7 +43,8 @@ ELEMENT:
 
     delete $self->{iterators}{$key};
     delete $self->{occurrences}{$key};
-    return $self;
+
+    return \@deleted_elements;
 }
 
 sub EXISTS {
